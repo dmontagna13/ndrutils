@@ -1,13 +1,13 @@
-# ndrutils <small>(Medium-throughput plate utilities)</small>
+# ndrutils <small>(utilities for medium-throughput research data)</small>
 
-**ndrutils** is a lightweight toolkit for people who work with medium throughput data.  
+**ndrutils** is a lightweight toolkit for scientists who work with medium throughput data.  
 It streamlines repetitive chores:
 
 * **Parsing instrument output**  
   &nbsp;&nbsp;• *HP/Tecan d300* “Print Map” XML ⇒ tidy table  
   &nbsp;&nbsp;• *Revvity Envision Nexus* plate reader CSV ⇒ tidy table
 
-* **Cleaning edge artefacts** with `drop_edges()`.
+* **Cleaning edge artifacts** with `drop_edges()`.
 
 * **Publishing‑ready plots** `theme_ndrutils` as a color‑blind‑safe variant of `ggplot2::theme_classic()`.
 
