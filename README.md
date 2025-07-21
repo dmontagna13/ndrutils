@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # --------------------------------------------------------------------
 # Write README.Rmd ----------------------------------------------------
 # --------------------------------------------------------------------
@@ -11,6 +12,8 @@ output: github_document
 <!-- You can add GitHub Actions, CRAN status, etc. badges here later -->
 <!-- badges: end -->
 
+=======
+>>>>>>> fd893d3331fcc285bc1099b2adbfd9f5dcbea0ef
 # ndrutils <small>(High‑throughput plate utilities)</small>
 
 **ndrutils** is a lightweight toolkit for people who work with medium throughput data.  
