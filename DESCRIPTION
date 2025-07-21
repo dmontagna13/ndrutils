@@ -9,7 +9,7 @@ Authors@R: c(
       role = c("aut", "cre")
     )
   )
-Description: Tools for parsing Bio‑Rad PrintMap XML files, Kaleido plate
+Description: Tools for parsing HP/Tecan d300 digital dispenser XML report files, Kaleido plate
     exports, and common helper utilities for medium-throughput data.
 Imports:
     xml2,
