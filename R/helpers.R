@@ -4,10 +4,12 @@
 #' @return A data frame with columns `y`, `ymin`, `ymax`.
 #' @export
 mean_sd <- function(x) {
+  m <- mean(x, na.rm = TRUE)          # mean
+  s <- sd(x,   na.rm = TRUE)          # SD
   data.frame(
-    y    = mean(x, na.rm = TRUE),
-    ymin = y - stats::sd(x, na.rm = TRUE),
-    ymax = y + stats::sd(x, na.rm = TRUE)
+    y    = m,
+    ymin = m - s,
+    ymax = m + s
   )
 }
 
