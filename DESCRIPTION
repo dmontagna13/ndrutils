@@ -1,7 +1,7 @@
 Package: ndrutils
 Type: Package
 Title: Utilities for data analysis of medium-throughput bench science.
-Version: 0.1.0
+Version: 0.1.1
 Authors@R: c(
     person(
       "Montagna", "Dan",
@@ -18,7 +18,8 @@ Imports:
     readr,
     stringr,
     ggplot2,
-    tidyverse
+    tidyverse,
+    mgcv
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
