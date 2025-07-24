@@ -9,8 +9,8 @@
                                        "########## One step at a time ##########"))
   this.msg.num <- sample(these.messages$num, 1)
 
-  this.message <- dplyr::filter(these.messages, num == this.msg.num) %>%
-    pull(message)
+  this.message.df <- dplyr::filter(these.messages, num == this.msg.num)
+  this.message <- this.message.df$message
 
   packageStartupMessage(
     paste0(
