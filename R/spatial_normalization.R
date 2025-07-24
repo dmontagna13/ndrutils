@@ -91,7 +91,7 @@ spatial_normalization <- function(data,
   n_points <- sum(!is.na(train_df$z))
   k_val    <- max(10L, floor(n_points * k_prop))  # ensure a minimum
 
-  fit <- mgcv::gam(z ~ mgcv::s(x, y, bs = "tp", k = k_val),
+  fit <- mgcv::gam(z ~ s(x, y, bs = "tp", k = k_val),
                    data = train_df,
                    method = "REML")
 
