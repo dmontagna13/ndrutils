@@ -80,7 +80,7 @@ spatial_normalization <- function(data,
   uni_df <- data %>%
     dplyr::filter(plate == uniformity_plate) %>%
     dplyr::select(well, val) %>%
-    dplyr::mutate(val = val/mean(uni_df$well))
+    dplyr::mutate(val = val/mean(well))
 
 
   # infer x/y for uniformity wells
