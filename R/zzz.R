@@ -2,7 +2,7 @@
 .onAttach <- function(libname, pkgname) {          # DO NOT EXPORT
   ver <- utils::packageVersion(pkgname)
 
-  these.messages <- tibble(num = c(1, 2, 3, 4),
+  these.messages <- data.frame(num = c(1, 2, 3, 4),
                            message = c("###### You're doing a great job! #######",
                                        "######### Today is a new day! ##########",
                                        "##### Look Mom, I'm in a computer! #####",
