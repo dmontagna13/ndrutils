@@ -19,7 +19,7 @@ It streamlines repetitive chores:
 if (!requireNamespace("remotes", quietly = TRUE))
   install.packages("remotes")
 
-remotes::install_github("dmontagna13/ndrutils")   # change to your user/org
+remotes::install_github("dmontagna13/ndrutils")
 
 ```
 
