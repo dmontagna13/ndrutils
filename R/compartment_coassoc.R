@@ -299,11 +299,7 @@ compartment_coassoc <- function(
     cell_geom <- df_ci %>%
       dplyr::group_by(.data$unique.cell) %>%
       dplyr::summarise(
-<<<<<<< HEAD
         genotype = dplyr::first(stats::na.omit(.data$genotype)),
-=======
-        genotype = dplyr::first(na.omit(.data$genotype)),
->>>>>>> e6db773f5cbbe41130fcfdea3c111d9b2fbef23f
         well     = dplyr::first(.data$well),
         field    = dplyr::first(.data$field),
         area_px2 = .hull_area_px2(.data$x.coord, .data$y.coord),
