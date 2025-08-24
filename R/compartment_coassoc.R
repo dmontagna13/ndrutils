@@ -120,23 +120,24 @@ compartment_coassoc <- function(
 
   build_positive_compartments <- function(marker_df, cell_area_tbl, marker_name,
                                           alpha_pair = 0.05, show_progress = TRUE) {
-    DT  <- data.table::as.data.table(marker_df)
-    CA  <- data.table::as.data.table(cell_area_tbl)
+    # Coerce to data.table
+    DT <- data.table::as.data.table(marker_df)
+    CA <- data.table::as.data.table(cell_area_tbl)
 
-    # sanity: required columns present?
-    if (!"unique.cell" %in% names(DT)) {
-      stop("marker_df is missing 'unique.cell'")
+    # Minimal column checks (fail fast with clear messages)
+    req_DT <- c("genotype","well","field","unique.cell","x.coord","y.coord")
+    miss_DT <- setdiff(req_DT, names(DT))
+    if (length(miss_DT)) {
+      stop("marker_df is missing required columns: ", paste(miss_DT, collapse = ", "))
     }
-    needed <- c("unique.cell","area_px2","genotype","well","field")
-    if (!all(needed %in% names(CA))) {
-      stop("cell_area_tbl must contain 'unique.cell', 'area_px2', 'genotype', 'well', 'field'")
+    req_CA <- c("unique.cell","area_px2")
+    miss_CA <- setdiff(req_CA, names(CA))
+    if (length(miss_CA)) {
+      stop("cell_area_tbl is missing required columns: ", paste(miss_CA, collapse = ", "))
     }
 
-    # key both tables on unique.cell for fast/safe subsetting
-    data.table::setkey(DT, unique.cell)
-    data.table::setkey(CA, unique.cell)
-
-    ucs <- CA$unique.cell
+    # Work per cell
+    ucs <- unique(CA$unique.cell)
     out_list <- vector("list", length(ucs))
 
     if (isTRUE(show_progress)) {
@@ -147,29 +148,33 @@ compartment_coassoc <- function(
 
     for (i in seq_along(ucs)) {
       uc <- ucs[i]
-      g  <- DT[.(uc)]                 # keyed lookup on unique.cell
-      area_px2 <- CA[.(uc)]$area_px2  # keyed lookup on unique.cell
+      g  <- DT[unique.cell == uc]
+      area_px2 <- CA[unique.cell == uc, area_px2][1]
+      if (!is.finite(area_px2) || area_px2 <= 0) area_px2 <- 1e-6
 
+      # No puncta for this cell -> return empty tibble with correct cols
       if (!nrow(g)) {
         out_list[[i]] <- tibble::tibble(
-          genotype    = CA[.(uc)]$genotype,
-          well        = CA[.(uc)]$well,
-          field       = CA[.(uc)]$field,
-          unique.cell = uc,
+          genotype    = character(0),
+          well        = character(0),
+          field       = character(0),
+          unique.cell = character(0),
           comp_id     = character(0),
           comp_x      = numeric(0),
           comp_y      = numeric(0),
           comp_size   = integer(0),
-          marker      = marker_name
+          marker      = character(0)
         )
         if (isTRUE(show_progress)) cli::cli_progress_update(id = pb_id, inc = 1)
         next
       }
 
-      lambda <- nrow(g) / max(area_px2, 1e-6)
+      # Significance radius for same-type agglomeration
+      lambda <- nrow(g) / area_px2
       r_eps  <- .sig_radius(lambda, alpha_pair)
 
       if (nrow(g) == 1L || !is.finite(r_eps) || r_eps <= 0) {
+        # Single point => single-compartment centroid at that point
         cent <- tibble::tibble(
           genotype    = g$genotype[1],
           well        = g$well[1],
@@ -182,26 +187,45 @@ compartment_coassoc <- function(
           marker      = marker_name
         )
         out_list[[i]] <- cent
-      } else {
-        cl <- dbscan::dbscan(as.matrix(g[, c(x.coord, y.coord)]), eps = r_eps, minPts = 1)
-        g[, cluster := cl$cluster]
-        cent <- g %>%
-          dplyr::as_tibble() %>%
-          dplyr::group_by(.data$genotype, .data$well, .data$field, .data$unique.cell, .data$cluster) %>%
-          dplyr::summarise(
-            comp_x = mean(.data$x.coord),
-            comp_y = mean(.data$y.coord),
-            comp_size = dplyr::n(),
-            .groups = "drop"
-          ) %>%
-          dplyr::mutate(
-            comp_id = paste0(.data$unique.cell, "__", marker_name, "__", .data$cluster),
-            marker  = marker_name
-          ) %>%
-          dplyr::select(.data$genotype, .data$well, .data$field, .data$unique.cell,
-                        .data$comp_id, .data$comp_x, .data$comp_y, .data$comp_size, .data$marker)
-        out_list[[i]] <- cent
+        if (isTRUE(show_progress)) cli::cli_progress_update(id = pb_id, inc = 1)
+        next
       }
+
+      # ---- Defensive DBSCAN block --------------------------------------------
+      # Build a *pure* numeric matrix of coordinates; ensure row counts match
+      coords <- as.matrix(g[, .(x.coord, y.coord)])
+      # (rare) guard if anything weird crept in
+      if (nrow(coords) != nrow(g)) {
+        stop("Internal error: coords rows (", nrow(coords), ") != g rows (", nrow(g), ") for cell ", uc)
+      }
+
+      cl <- dbscan::dbscan(coords, eps = r_eps, minPts = 1)
+
+      cluster_vec <- as.integer(cl$cluster)
+      if (length(cluster_vec) != nrow(g)) {
+        # This is what triggered your error; be explicit about handling it.
+        # Truncate/pad to match nrow(g) so we can proceed, and warn.
+        cli::cli_alert_warning(
+          "dbscan returned {length(cluster_vec)} clusters for {nrow(g)} points in cell {uc}; truncating to nrow(g)."
+        )
+        cluster_vec <- cluster_vec[seq_len(nrow(g))]
+      }
+      # Assign by reference
+      g[, cluster := cluster_vec]
+
+      # Collapse points by cluster -> centroids
+      cent <- g[, .(
+        comp_x    = mean(x.coord),
+        comp_y    = mean(y.coord),
+        comp_size = .N
+      ), by = .(genotype, well, field, unique.cell, cluster)][
+        , `:=`(
+          comp_id = paste0(unique.cell, "__", marker_name, "__", cluster),
+          marker  = marker_name
+        )][
+          , .(genotype, well, field, unique.cell, comp_id, comp_x, comp_y, comp_size, marker)]
+
+      out_list[[i]] <- tibble::as_tibble(cent)
 
       if (isTRUE(show_progress)) cli::cli_progress_update(id = pb_id, inc = 1)
     }
