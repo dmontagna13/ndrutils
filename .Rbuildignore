@@ -1,8 +1,6 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^NAMESPACE_backup$
-^mean_sd_mtcars\.png$
-^theme_ndrutils\.png$
 ^-BMD-.*\.RData$
 ^-BMD-.*\.Rhistory$
 ^DESCRIPTION-BMD-157134157$
