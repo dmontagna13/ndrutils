@@ -1,4 +1,4 @@
-#' A publication‑ready, colour‑blind‑safe theme + palette combo
+#' A publication-ready, colour-blind-safe theme + palette combo
 #'
 #' `theme_ndrutils()` returns a **list** containing
 #' *a theme* **and** two manual scales (colour & fill).
@@ -14,7 +14,7 @@
 #' @param base_line_size Thickness of lines.
 #' @param base_rect_size Thickness of rect borders.
 #' @param na_colour Colour to use for missing values.
-#' @param palette Either an integer 1–5 (built‑in palettes) or a character
+#' @param palette Either an integer 1-5 (built-in palettes) or a character
 #'   vector of colour hex codes.
 #'
 #' @return A list: `list(theme, scale_colour, scale_fill)`.
@@ -39,12 +39,12 @@ theme_ndrutils <- function(base_size      = 11,
   cols <- if (length(palette) == 1L && is.numeric(palette) || is.character(palette)) {
     id <- as.character(palette)
     if (!id %in% names(palettes))
-      stop("`palette` must be 1‑", length(palettes), " or a vector of colours.")
+      stop("`palette` must be 1-", length(palettes), " or a vector of colours.")
     palettes[[id]]
   } else if (is.vector(palette)) {
     palette
   } else {
-    stop("`palette` must be 1‑5 or a colour vector.", call. = FALSE)
+    stop("`palette` must be 1-5 or a colour vector.", call. = FALSE)
   }
 
   # theme

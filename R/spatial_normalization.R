@@ -1,9 +1,9 @@
 #' Spatially normalise plate data using a GAM surface trained on a uniformity plate
 #'
 #' @description
-#' Fits a thin‑plate spline (via \code{mgcv::gam}) to the well values of a
+#' Fits a thin-plate spline (via \code{mgcv::gam}) to the well values of a
 #' designated \code{uniformity_plate} and uses the predicted surface to normalise
-#' one or more target plates. The function is pipe‑friendly:
+#' one or more target plates. The function is pipe-friendly:
 #'
 #' \preformatted{
 #'   df %>%
@@ -17,7 +17,7 @@
 #'
 #' @param data A data frame containing at least the columns \code{well},
 #'   \code{val}, and \code{plate}. The plate layout is assumed to be consistent
-#'   (e.g. all 96‑well or all 384‑well).
+#'   (e.g. all 96-well or all 384-well).
 #' @param uniformity_plate A single value (character/ numeric) identifying the
 #'   plate used to train the spatial surface.
 #' @param apply_to A vector of plate identifiers to normalise using the trained

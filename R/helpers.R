@@ -1,4 +1,4 @@
-#' Mean ± SD summary helper for *ggplot2::stat_summary()*
+#' Mean \eqn{\pm} SD summary helper for *ggplot2::stat_summary()*
 #'
 #' @param x Numeric vector.
 #' @return A data frame with columns `y`, `ymin`, `ymax`.
@@ -13,11 +13,11 @@ mean_sd <- function(x) {
   )
 }
 
-#' Drop perimeter wells from plate‑based data
+#' Drop perimeter wells from plate-based data
 #'
 #' @param .data  Data frame containing `plate`, `row`, and `col` columns.
 #' @param apply_to_plates Character vector of plates to trim.
-#'   `NULL` = all plates.
+#'   `NULL` = all plates.
 #' @param drop Logical; if `FALSE`, returns `.data` untouched.
 #' @param col_edges Integer vector of columns to drop (e.g. `c(1, 24)`).
 #' @param row_edges Character vector of rows to drop (e.g. `c("A","P")`).

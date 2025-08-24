@@ -1,9 +1,9 @@
-#' Parse a Thermo *Kaleido* plate‑reader CSV export
+#' Parse a Revvity Envision Nexus plate-reader CSV export from *Kaleido* software
 #'
 #' Works with the typical Kaleido “grid” output in which the well matrix
 #' immediately follows a header line like `",1,2,…,12"`.
 #'
-#' @param file_path Path to a `.csv` or plain‑text export.
+#' @param file_path Path to a `.csv` or plain-text export.
 #' @param plate.number Numeric or character identifying the plate.
 #'
 #' @return A data frame with columns
