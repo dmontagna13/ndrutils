@@ -2,7 +2,7 @@
 % Please edit documentation in R/helpers.R
 \name{mean_sd}
 \alias{mean_sd}
-\title{Mean ± SD summary helper for *ggplot2::stat_summary()*}
+\title{Mean \eqn{\pm} SD summary helper for *ggplot2::stat_summary()*}
 \usage{
 mean_sd(x)
 }
@@ -13,5 +13,5 @@ mean_sd(x)
 A data frame with columns `y`, `ymin`, `ymax`.
 }
 \description{
-Mean ± SD summary helper for *ggplot2::stat_summary()*
+Mean \eqn{\pm} SD summary helper for *ggplot2::stat_summary()*
 }

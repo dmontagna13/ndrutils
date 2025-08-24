@@ -2,12 +2,12 @@
 % Please edit documentation in R/parse_plate_kaleido.R
 \name{parse_plate_kaleido}
 \alias{parse_plate_kaleido}
-\title{Parse a Thermo *Kaleido* plate‑reader CSV export}
+\title{Parse a Revvity Envision Nexus plate-reader CSV export from *Kaleido* software}
 \usage{
 parse_plate_kaleido(file_path, plate.number = 1)
 }
 \arguments{
-\item{file_path}{Path to a `.csv` or plain‑text export.}
+\item{file_path}{Path to a `.csv` or plain-text export.}
 
 \item{plate.number}{Numeric or character identifying the plate.}
 }

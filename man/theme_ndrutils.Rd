@@ -2,7 +2,7 @@
 % Please edit documentation in R/theme_ndrutils.R
 \name{theme_ndrutils}
 \alias{theme_ndrutils}
-\title{A publication‑ready, colour‑blind‑safe theme + palette combo}
+\title{A publication-ready, colour-blind-safe theme + palette combo}
 \usage{
 theme_ndrutils(
   base_size = 11,
@@ -21,7 +21,7 @@ theme_ndrutils(
 
 \item{na_colour}{Colour to use for missing values.}
 
-\item{palette}{Either an integer 1–5 (built‑in palettes) or a character
+\item{palette}{Either an integer 1-5 (built-in palettes) or a character
 vector of colour hex codes.}
 }
 \value{

@@ -2,7 +2,7 @@
 % Please edit documentation in R/helpers.R
 \name{drop_edges}
 \alias{drop_edges}
-\title{Drop perimeter wells from plate‑based data}
+\title{Drop perimeter wells from plate-based data}
 \usage{
 drop_edges(
   .data,
@@ -16,7 +16,7 @@ drop_edges(
 \item{.data}{Data frame containing `plate`, `row`, and `col` columns.}
 
 \item{apply_to_plates}{Character vector of plates to trim.
-`NULL` = all plates.}
+`NULL` = all plates.}
 
 \item{drop}{Logical; if `FALSE`, returns `.data` untouched.}
 
@@ -25,5 +25,5 @@ drop_edges(
 \item{row_edges}{Character vector of rows to drop (e.g. `c("A","P")`).}
 }
 \description{
-Drop perimeter wells from plate‑based data
+Drop perimeter wells from plate-based data
 }
