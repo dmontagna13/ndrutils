@@ -31,11 +31,8 @@ importFrom(purrr,map)
 importFrom(purrr,pmap)
 importFrom(readr,read_csv)
 importFrom(rlang,.data)
-<<<<<<< HEAD
 importFrom(stats,na.omit)
 importFrom(stats,sd)
-=======
->>>>>>> e6db773f5cbbe41130fcfdea3c111d9b2fbef23f
 importFrom(stringr,str_replace_all)
 importFrom(tibble,tibble)
 importFrom(tidyr,pivot_longer)
