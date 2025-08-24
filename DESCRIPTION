@@ -2,7 +2,6 @@ Package: ndrutils
 Type: Package
 Title: Utilities for data analysis of medium-throughput bench science.
 Version: 0.1.2
->>>>>>> e6db773f5cbbe41130fcfdea3c111d9b2fbef23f
 Authors@R: c(
     person(
       "Montagna", "Dan",
