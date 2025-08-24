@@ -546,6 +546,8 @@ compartment_coassoc <- function(
             id   = .data$object.id,
             x_rel_um = (.data$x.coord - cx) * px,
             y_rel_um = (.data$y.coord - cy) * px,
+            cell_center_x_px = cx, # Cell centroid x-coord. Added 24-Aug 2:56am - DM
+            cell_center_y_px = cy, # Cell centroid y-coord. Added 24-Aug 2:56am - DM
             comp_size = as.integer(NA),
             is_close  = NA,
             r_thr_px  = NA_real_
@@ -559,6 +561,8 @@ compartment_coassoc <- function(
             id   = .data$object.id,
             x_rel_um = (.data$x.coord - cx) * px,
             y_rel_um = (.data$y.coord - cy) * px,
+            cell_center_x_px = cx, # Cell centroid x-coord. Added 24-Aug 2:56am - DM
+            cell_center_y_px = cy, # Cell centroid y-coord. Added 24-Aug 2:56am - DM
             comp_size = as.integer(NA),
             is_close  = NA,
             r_thr_px  = NA_real_
@@ -572,6 +576,8 @@ compartment_coassoc <- function(
             id   = .data$comp_id,
             x_rel_um = (.data$comp_x - cx) * px,
             y_rel_um = (.data$comp_y - cy) * px,
+            cell_center_x_px = cx, # Cell centroid x-coord. Added 24-Aug 2:56am - DM
+            cell_center_y_px = cy, # Cell centroid y-coord. Added 24-Aug 2:56am - DM
             comp_size = as.integer(.data$comp_size),
             is_close  = .data$is_close,
             r_thr_px  = .data$r_thr_px
@@ -585,6 +591,8 @@ compartment_coassoc <- function(
             id   = .data$comp_id,
             x_rel_um = (.data$comp_x - cx) * px,
             y_rel_um = (.data$comp_y - cy) * px,
+            cell_center_x_px = cx, # Cell centroid x-coord. Added 24-Aug 2:56am - DM
+            cell_center_y_px = cy, # Cell centroid y-coord. Added 24-Aug 2:56am - DM
             comp_size = as.integer(.data$comp_size),
             is_close  = .data$is_close,
             r_thr_px  = .data$r_thr_px
