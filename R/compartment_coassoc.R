@@ -41,14 +41,14 @@
 #' @importFrom tibble tibble
 
 compartment_coassoc <- function(
-  df,
-  px = 0.149,
-  ci.cutoff = 0,
-  alpha_pair  = 0.05,
-  alpha_cross = 0.05,
-  show_progress   = TRUE,
-  title_rel_height = 0.08,
-  return_exemplars = TRUE
+    df,
+    px = 0.149,
+    ci.cutoff = 0,
+    alpha_pair  = 0.05,
+    alpha_cross = 0.05,
+    show_progress   = TRUE,
+    title_rel_height = 0.08,
+    return_exemplars = TRUE
 ) {
 
   # ---------- sanity checks ----------
@@ -59,6 +59,15 @@ compartment_coassoc <- function(
     stop("df is missing required column(s): ",
          paste(missing_cols, collapse = ", "), call. = FALSE)
   }
+
+  # 🔧 normalize key-column types early to avoid bind_rows() type clashes
+  df <- df %>%
+    dplyr::mutate(
+      genotype    = as.character(.data$genotype),
+      well        = as.character(.data$well),
+      field       = as.character(.data$field),
+      unique.cell = as.character(.data$unique.cell)
+    )
 
   # enforce exactly two object types
   types_all <- unique(df$object.type)
@@ -192,9 +201,7 @@ compartment_coassoc <- function(
       }
 
       # ---- Defensive DBSCAN block --------------------------------------------
-      # Build a *pure* numeric matrix of coordinates; ensure row counts match
       coords <- as.matrix(g[, .(x.coord, y.coord)])
-      # (rare) guard if anything weird crept in
       if (nrow(coords) != nrow(g)) {
         stop("Internal error: coords rows (", nrow(coords), ") != g rows (", nrow(g), ") for cell ", uc)
       }
@@ -203,14 +210,11 @@ compartment_coassoc <- function(
 
       cluster_vec <- as.integer(cl$cluster)
       if (length(cluster_vec) != nrow(g)) {
-        # This is what triggered your error; be explicit about handling it.
-        # Truncate/pad to match nrow(g) so we can proceed, and warn.
         cli::cli_alert_warning(
           "dbscan returned {length(cluster_vec)} clusters for {nrow(g)} points in cell {uc}; truncating to nrow(g)."
         )
         cluster_vec <- cluster_vec[seq_len(nrow(g))]
       }
-      # Assign by reference
       g[, cluster := cluster_vec]
 
       # Collapse points by cluster -> centroids
