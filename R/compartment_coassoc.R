@@ -36,6 +36,7 @@
 #' @importFrom rlang .data
 #' @importFrom stats na.omit sd
 #' @importFrom data.table as.data.table
+#' @importFrom data.table :=
 #' @importFrom purrr map pmap
 #' @importFrom tibble tibble
 
