@@ -1,37 +1,34 @@
 # ndrutils <small>(utilities for medium-throughput research data)</small>
 
-**ndrutils** is a lightweight toolkit for scientists who work with medium throughput data.  
+**ndrutils** is a lightweight toolkit for scientists who work with medium throughput data.\
 It streamlines repetitive chores:
 
-* **Parsing instrument output**  
-  &nbsp;&nbsp;• *HP/Tecan d300* “Print Map” XML ⇒ tidy table  
-  &nbsp;&nbsp;• *Revvity Envision Nexus* plate reader CSV ⇒ tidy table
+-   **Parsing instrument output**\
+      • *HP/Tecan d300* “Print Map” XML ⇒ tidy table\
+      • *Revvity Envision Nexus* plate reader CSV ⇒ tidy table
 
-* **Cleaning edge artifacts** with `drop_edges()`.
+-   **Cleaning edge artifacts** with `drop_edges()`.
 
-* **Publishing‑ready plots** `theme_ndrutils` as a color‑blind‑safe variant of `ggplot2::theme_classic()`.
+-   **Publishing‑ready plots** `theme_ndrutils` as a color‑blind‑safe variant of `ggplot2::theme_classic()`.
 
----
+------------------------------------------------------------------------
 
 ## Installation
 
-```r
+``` r
 if (!requireNamespace("remotes", quietly = TRUE))
   install.packages("remotes")
 
 remotes::install_github("dmontagna13/ndrutils")
-
 ```
 
-  |Function              |What it does|Key arguments|
-  | --- | --- | --- |
-  |parse_printmap()|Parse HP / Tecan d300 XML reports and return one row per well with plate, well, compound, concentration, and DMSO %| `file, add_prefix = "BIO-"` (`FALSE` to suppress)|
-  |parse_plate_kaleido() | Convert a Revvity Envision Nexus CSV export (96‑ or 384‑well) into a long table (file, plate, well, value)|`file_path, plate.number = 1`|
-  |drop_edges()|Remove perimeter wells (rows A/P, columns 1/24 by default) to avoid edge effects|`.data, row_edges, col_edges, apply_to_plates, drop = TRUE`|
-  |theme_ndrutils()|A ggplot2 theme + colour‑blind‑safe palette (GraphPad Prism 9 scheme)|`palette = p` where p = numbers 1‑5 or a custom vector|
-  |mean_sd()|Helper for `ggplot2::stat_summary()` that returns mean ± SD|`x` (numeric vector)|
-
-
+| Function | What it does | Key arguments |
+|------------------------|------------------------|------------------------|
+| parse_printmap() | Parse HP / Tecan d300 XML reports and return one row per well with plate, well, compound, concentration, and DMSO % | `file, add_prefix = "BIO-"` (`FALSE` to suppress) |
+| parse_plate_kaleido() | Convert a Revvity Envision Nexus CSV export (96‑ or 384‑well) into a long table (file, plate, well, value) | `file_path, plate.number = 1` |
+| drop_edges() | Remove perimeter wells (rows A/P, columns 1/24 by default) to avoid edge effects | `.data, row_edges, col_edges, apply_to_plates, drop = TRUE` |
+| theme_ndrutils() | A ggplot2 theme + colour‑blind‑safe palette (GraphPad Prism 9 scheme) | `palette = p` where p = numbers 1‑5 or a custom vector |
+| mean_sd() | Helper for `ggplot2::stat_summary()` that returns mean ± SD | `x` (numeric vector) |
 
 ## Example Use
 
@@ -41,12 +38,11 @@ remotes::install_github("dmontagna13/ndrutils")
 
 As default behavior, any compounds annotated with a number-only name will get the prefix "BIO-" added. This can be changed with argument `add_prefix`. `add_prefix` can be set to any string, or can be set to `FALSE` if you want bare numbers left alone.
 
-```r
+``` r
 pm <- parse_printmap("Plate_Map_Run42.xml",
                      add_prefix = "CMPD-")   # custom prefix
 head(pm)
 ```
-
 
 ### 2. `parse_plate_kaleido`
 
@@ -62,8 +58,7 @@ Currently, this function supports 96-well and 384-well formats only. It's a quic
 
 As written, it imports a single plate:
 
-
-```r
+``` r
 
 pr <- parse_plate_kaleido("readout_42.csv", plate.number = 1)
 head(pr)
@@ -75,12 +70,11 @@ head(pr)
 #4 readout_42.csv     1  D01 538
 #5 readout_42.csv     1  E01 520
 #6 readout_42.csv     1  F01 391
-
 ```
 
 However, if you have a dataframe with columns `file` and `plate`, it can be used as .x inside `purrr::pmap_dfr(.x, parse_plate_kaleido)` to import many plates and combine them into a single dataframe:
 
-```r
+``` r
 plate.list <- data.frame(plate = c(1, 2, 3, 4, 5),
 file = c("plate1.csv", "plate2.csv", "plate3.csv", "plate4.csv", "plate5.csv"))
 
@@ -94,15 +88,13 @@ head(plate.list)
 #5     5 plate5.csv
 
 pr <- purrr::pmap_dfr(plate.file.list, parse_plate_kaleido) # Parses plates 1-5 into a single dataframe.
-
 ```
-
 
 ### 3. `drop_edges`
 
 Edge effects are a common problem in tissue cultured assays. drop_edges() is written to quickly drop these wells from the dataset before further summarization.
 
-```r
+``` r
 clean <- drop_edges(pr)                               # default removes rows A/P & cols 1/24 from all plates
 clean <- drop_edges(pr,
                     apply_to_plates = c(4, 5))        # removes rows A/P & cols 1/24 from plates 4 & 5 only
@@ -111,72 +103,72 @@ clean <- drop_edges(pr,
                     apply_to_plates = c(1, 2),
                     col_edges = c(1, 12),
                     row_edges = c("A", "H"))          # removes rows A/H & cols 1/12 from plates 1 & 2 only
-
 ```
 
-As of the current release, you can't drop different sets of rows/columns on different plates with the same line.
-You shouldn't have any trouble stringing them together in an tidyverse-style pipe though.
+As of the current release, you can't drop different sets of rows/columns on different plates with the same line. You shouldn't have any trouble stringing them together in an tidyverse-style pipe though.
 
 ### 4. `theme_ndrutils()`
+
 theme_ndrutils is a ggplot theme with some custom arguments. It is essentially the same as theme_classic() with the "colorblind safe" colors from Graphpad Prism 9. It lets the user quickly change the order of the color assignments.
 
-```r
+``` r
 ggplot(df, aes(x = factor.level, y = y, fill = factor.level))+
     geom_col()+
     theme_ndrutils(base_size = 6, palette = 1)+
     labs(title = paste0("theme_ndrutils(palette = ", 1, ")"),
          subtitle = "example graph")
 ```
-<a href="theme_ndrutils.png"><img class="book" src="theme_ndrutils.png" alt="example graph using each of the 5 default palettes" height="200"></a>
 
+<a href="theme_ndrutils.png"><img src="theme_ndrutils.png" alt="example graph using each of the 5 default palettes" class="book" height="200"/></a>
 
 ### 5. `mean_sd()`
 
 `mean_sd()` was written to be called from within a ggplot2 pipe. Usually, the input dataframe to ggplot will be either mean/sd values OR all values per condition. Rather than preparing two dataframes for a single plot, mean_sd() allows you to generate a temporary table within the pipe to calculate mean/sd. Example below:
 
-```r
+``` r
 ggplot(mtcars, aes(x = cyl, y = disp, fill = as.character(cyl))) +
     stat_summary(fun = mean, geom = "bar", alpha = 0.7) +
     stat_summary(fun.data = mean_sd, geom = "errorbar", width = 0.2) +
     geom_point()+
     theme_ndrutils(palette = 2)
 ```
-<a href="mean_sd_mtcars.png"><img class="book" src="mean_sd_mtcars.png" alt="example graph using each of the 5 default palettes" height="200"></a>
+
+<a href="mean_sd_mtcars.png"><img src="mean_sd_mtcars.png" alt="example graph using each of the 5 default palettes" class="book" height="200"/></a>
 
 ### 5. `compartment_coassoc()`
 
-Builds per-cell **same-type “compartments”** by clustering puncta with a **density-normalized radius** (`DBSCAN` with `eps` from a Poisson nearest-neighbor model), then tests **cross-type proximity** (src → tgt) against the same density-derived null.
-Returns 
-        - per-well summaries,
-        - a publication-ready plot,
-        - exemplar cells closest to each genotype means
+Builds per-cell **same-type “compartments”** by clustering puncta with a **density-normalized radius** (`DBSCAN` with `eps` from a Poisson nearest-neighbor model), then tests **cross-type proximity** (src → tgt) against the same density-derived null. Returns - per-well summaries, - a publication-ready plot, - exemplar cells closest to each genotype means
 
-    * **Input (long table)**:
-        - `genotype`
-        - `well`
-        - `field`
-        - `unique`.cell
-        - `object.id`
-        - `object.type` (exactly two values)
-        - `x.coord` and `y.coord`
-        - `corr.intensity`.
+-   **Input (long table)**:
 
-    * **Key args:**
-        - `px` (μm/px)
-        - `ci.cutoff` (scalar or vector)
-        - `alpha_pair` (same-type clustering)
-        - `alpha_cross` (cross-type proximity).
+    -   `genotype`
+    -   `well`
+    -   `field`
+    -   `unique`.cell
+    -   `object.id`
+    -   `object.type` (exactly two values)
+    -   `x.coord` and `y.coord`
+    -   `corr.intensity`.
 
-    * **Returns**:
-        - `final.plot` (cowplot)
-        - `well_summary` (long table)
-        - `exemplars` (centered coordinates per exemplar cell)
-        
-        if ci.cutoff has length > 1, a named list per cutoff.
-        
+-   **Key args:**
+
+    -   `px` (μm/px)
+    -   `ci.cutoff` (scalar or vector)
+    -   `alpha_pair` (same-type clustering)
+    -   `alpha_cross` (cross-type proximity).
+
+-   **Returns**:
+
+    -   `final.plot` (cowplot)
+    -   `well_summary` (long table)
+    -   `exemplars` (centered coordinates per exemplar cell)
+
+    if ci.cutoff has length \> 1, a named list per cutoff.
+
 #### Minimal use:
 
-```{r}
+``` r
+
 res <- ndrutils::compartment_coassoc(df, px = 0.149, ci.cutoff = 10,
                                      alpha_pair = 0.05, alpha_cross = 0.05)
 res$final.plot

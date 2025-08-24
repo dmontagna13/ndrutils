@@ -22,7 +22,7 @@ Throughout, we note assumptions, why the approach is reasonable, and why it stan
 
 ## 1.1 Libraries
 
-```{r libraries}
+``` r libraries
 library(tidyverse)
 library(ndrutils)
 library(readxl)
@@ -39,7 +39,7 @@ library(ggforce)
 
 We could do this down below, but I like to be able to set parameters right at the top of my markdown file.
 
-```{r parameters}
+``` r parameters
 
 # ===================== PARAMETERS =============================================
 px <- 0.149         # μm per pixel
@@ -81,7 +81,7 @@ You can start with data however you like, provided it has at least the following
     -   **y.coord** Y-coordinate for each object centroid.
     -   **corr.intensity**: The intensity of each puncta. This works best when corrected or normalized somehow during the image analysis itself, as different cutoffs cannot be set for the two types of objects. Future releases will be more flexible in this resepect.
 
-```{r load data}
+``` r load data
 fpath <- "path\\to\\your\\data\\"
 
 # Name of the subfolder holding .csv files for obj1
@@ -158,7 +158,7 @@ df <- purrr::imap(
 
 ## 1.4 Run the analysis
 
-```{r}
+``` r
 
 res <- ndrutils::compartment_coassoc(
   df,
@@ -196,7 +196,7 @@ We ensure required columns exist and coerce key IDs to character so downstream `
 
 ### Code (simplified)
 
-```{r}
+``` r
 
 required_cols <- c("genotype","well","field","unique.cell","object.id",
                    "object.type","x.coord","y.coord","corr.intensity")
@@ -218,7 +218,7 @@ We estimate each cell’s footprint using the convex hull of all object coordina
 
 ### Code (simplified)
 
-```{r}
+``` r
 
 .hull_area_px2 <- function(x, y) { ... }      # convex hull area
 .hull_centroid_px <- function(x, y) { ... }   # polygon centroid
@@ -229,7 +229,7 @@ We estimate each cell’s footprint using the convex hull of all object coordina
 
 ### Code:
 
-```{r}
+``` r
 
 .sig_radius <- function(lambda, alpha) {
   ifelse(lambda > 0, sqrt(-log1p(-alpha) / (pi * lambda)), Inf)
@@ -260,7 +260,7 @@ $$
 
 ### Code (simplified)
 
-```{r}
+``` r
 
 build_positive_compartments <- function(marker_df, cell_area_tbl, marker_name, alpha_pair, show_progress) {
   # per-cell loop
@@ -275,7 +275,7 @@ build_positive_compartments <- function(marker_df, cell_area_tbl, marker_name, a
 
 ### Actual code:
 
-```{r}
+``` r
 
 
   build_positive_compartments <- function(marker_df, cell_area_tbl, marker_name,
@@ -421,7 +421,7 @@ build_positive_compartments <- function(marker_df, cell_area_tbl, marker_name, a
 
 ### Code (simplified):
 
-```{r}
+``` r
 add_within_nn_comp <- function(comp_tbl, cell_area_tbl) {
   # per cell+marker:
   # 1) compute each compartment’s nearest neighbor distance R
@@ -431,7 +431,7 @@ add_within_nn_comp <- function(comp_tbl, cell_area_tbl) {
 
 ### Actual code:
 
-```{r}
+``` r
   add_within_nn_comp <- function(comp_tbl, cell_area_tbl) {
     if (!nrow(comp_tbl)) {
       return(comp_tbl %>% dplyr::mutate(nn_comp = NA_real_, rtilde_comp = NA_real_))
@@ -473,7 +473,7 @@ add_within_nn_comp <- function(comp_tbl, cell_area_tbl) {
 
 ### Code (simplified):
 
-```{r}
+``` r
 classify_cross <- function(src_comp, tgt_comp, cell_area_tbl, alpha_cross) {
   # for each source compartment:
   #   Rst = distance to its nearest target compartment
@@ -484,7 +484,7 @@ classify_cross <- function(src_comp, tgt_comp, cell_area_tbl, alpha_cross) {
 
 ### Code (actual):
 
-```{r}
+``` r
 
   classify_cross <- function(src_comp, tgt_comp, cell_area_tbl,
                              alpha_cross = 0.05, show_progress = TRUE) {
@@ -550,7 +550,7 @@ $$ Thus $r_\alpha$ yields an exact size-$\alpha$ test at the per-source level: e
 
 ### Code (simplified):
 
-```{r}
+``` r
 
 # per-cell counts:
 n_type_comp    <- number_of_compartments_of_each_type
@@ -579,7 +579,7 @@ p.type.w.other <- 100 * n_type_w_other / n_type_comp  # percent "close"
 
 ### Code
 
-```{r}
+``` r
 
     # plotting
     bargraphing <- function(type_code) {
@@ -668,7 +668,7 @@ The paired view guards against misinterpretation: a high percentage with very fe
 
 ### Code:
 
-```{r}
+``` r
 # For each readout × genotype:
 # 1) compute genotype mean at the cell level
 # 2) pick up to 5 cells closest to that mean (small absolute deviation)
