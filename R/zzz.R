@@ -1,4 +1,21 @@
 ## R/zzz.R ---------------------------------------------------------------
+#' @keywords internal
+if (getRversion() >= "2.15.1") {
+  utils::globalVariables(c(
+    # dplyr/data columns
+    "genotype","well","field","unique.cell","object.id",
+    "object.type","x.coord","y.coord","corr.intensity",
+    "comp_id","comp_x","comp_y","comp_size",
+    "center_x_px","center_y_px","readout","readout_name","readout_label",
+    "readout.type","percent","value","dev",
+    # data.table bits R CMD check flags
+    "cluster",".",
+    # other columns used elsewhere in the pkg
+    "plate","dispensed.well","well.contents","single.fluid.concentration",
+    "dmso.percent","val","surface","x","y","num"
+  ))
+}
+
 .onAttach <- function(libname, pkgname) {          # DO NOT EXPORT
   ver <- utils::packageVersion(pkgname)
 
@@ -12,19 +29,7 @@
   this.message.df <- dplyr::filter(these.messages, num == this.msg.num)
   this.message <- this.message.df$message
 
-  utils::globalVariables(c(
-    # dplyr/data columns
-    "genotype","well","field","unique.cell","object.id",
-    "object.type","x.coord","y.coord","corr.intensity",
-    "comp_id","comp_x","comp_y","comp_size",
-    "center_x_px","center_y_px","readout","readout_name","readout_label",
-    "readout.type","percent","value","dev",
-    # data.table bits that R CMD check complains about
-    "cluster",".",
-    # other package functions using these:
-    "plate","dispensed.well","well.contents","single.fluid.concentration",
-    "dmso.percent","val","surface","x","y","num"
-  ))
+
 
   packageStartupMessage(
     paste0(
