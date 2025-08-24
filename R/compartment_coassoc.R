@@ -34,15 +34,12 @@
 #' @export
 #' @importFrom magrittr %>%
 #' @importFrom rlang .data
-<<<<<<< HEAD
 #' @importFrom stats na.omit sd
 #' @importFrom data.table as.data.table
 #' @importFrom data.table :=
 #' @importFrom purrr map pmap
 #' @importFrom tibble tibble
 
-=======
->>>>>>> e6db773f5cbbe41130fcfdea3c111d9b2fbef23f
 compartment_coassoc <- function(
   df,
   px = 0.149,
@@ -125,11 +122,13 @@ compartment_coassoc <- function(
                                           alpha_pair = 0.05, show_progress = TRUE) {
     DT  <- data.table::as.data.table(marker_df)
     CA  <- data.table::as.data.table(cell_area_tbl)
-<<<<<<< HEAD
 
     # sanity: required columns present?
-    if (!"unique.cell" %in% names(DT)) stop("marker_df is missing 'unique.cell'")
-    if (!all(c("unique.cell","area_px2","genotype","well","field") %in% names(CA))) {
+    if (!"unique.cell" %in% names(DT)) {
+      stop("marker_df is missing 'unique.cell'")
+    }
+    needed <- c("unique.cell","area_px2","genotype","well","field")
+    if (!all(needed %in% names(CA))) {
       stop("cell_area_tbl must contain 'unique.cell', 'area_px2', 'genotype', 'well', 'field'")
     }
 
@@ -137,8 +136,6 @@ compartment_coassoc <- function(
     data.table::setkey(DT, unique.cell)
     data.table::setkey(CA, unique.cell)
 
-=======
->>>>>>> e6db773f5cbbe41130fcfdea3c111d9b2fbef23f
     ucs <- CA$unique.cell
     out_list <- vector("list", length(ucs))
 
@@ -150,26 +147,14 @@ compartment_coassoc <- function(
 
     for (i in seq_along(ucs)) {
       uc <- ucs[i]
-<<<<<<< HEAD
-      g  <- DT[.(uc)]                     # all puncta from this cell
-      ca <- CA[.(uc)]                     # single-row cell area/meta
-      area_px2 <- ca$area_px2[[1]]
+      g  <- DT[.(uc)]                 # keyed lookup on unique.cell
+      area_px2 <- CA[.(uc)]$area_px2  # keyed lookup on unique.cell
 
       if (!nrow(g)) {
         out_list[[i]] <- tibble::tibble(
-          genotype    = ca$genotype[[1]],
-          well        = ca$well[[1]],
-          field       = ca$field[[1]],
-=======
-      g  <- DT[unique.cell == uc]
-      area_px2 <- CA[unique.cell == uc]$area_px2
-
-      if (!nrow(g)) {
-        out_list[[i]] <- tibble::tibble(
-          genotype    = CA[unique.cell == uc]$genotype,
-          well        = CA[unique.cell == uc]$well,
-          field       = CA[unique.cell == uc]$field,
->>>>>>> e6db773f5cbbe41130fcfdea3c111d9b2fbef23f
+          genotype    = CA[.(uc)]$genotype,
+          well        = CA[.(uc)]$well,
+          field       = CA[.(uc)]$field,
           unique.cell = uc,
           comp_id     = character(0),
           comp_x      = numeric(0),
@@ -198,16 +183,10 @@ compartment_coassoc <- function(
         )
         out_list[[i]] <- cent
       } else {
-<<<<<<< HEAD
         cl <- dbscan::dbscan(as.matrix(g[, c(x.coord, y.coord)]), eps = r_eps, minPts = 1)
         g[, cluster := cl$cluster]
-        cent <- tibble::as_tibble(g) %>%
-=======
-        cl <- dbscan::dbscan(as.matrix(g[, .(x.coord, y.coord)]), eps = r_eps, minPts = 1)
-        g$cluster <- cl$cluster
         cent <- g %>%
           dplyr::as_tibble() %>%
->>>>>>> e6db773f5cbbe41130fcfdea3c111d9b2fbef23f
           dplyr::group_by(.data$genotype, .data$well, .data$field, .data$unique.cell, .data$cluster) %>%
           dplyr::summarise(
             comp_x = mean(.data$x.coord),
@@ -226,12 +205,10 @@ compartment_coassoc <- function(
 
       if (isTRUE(show_progress)) cli::cli_progress_update(id = pb_id, inc = 1)
     }
-<<<<<<< HEAD
 
-=======
->>>>>>> e6db773f5cbbe41130fcfdea3c111d9b2fbef23f
     dplyr::bind_rows(out_list)
   }
+
 
   add_within_nn_comp <- function(comp_tbl, cell_area_tbl) {
     if (!nrow(comp_tbl)) {
