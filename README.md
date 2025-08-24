@@ -142,3 +142,45 @@ ggplot(mtcars, aes(x = cyl, y = disp, fill = as.character(cyl))) +
     theme_ndrutils(palette = 2)
 ```
 <a href="mean_sd_mtcars.png"><img class="book" src="mean_sd_mtcars.png" alt="example graph using each of the 5 default palettes" height="200"></a>
+
+### 5. `compartment_coassoc()`
+
+Builds per-cell **same-type “compartments”** by clustering puncta with a **density-normalized radius** (`DBSCAN` with `eps` from a Poisson nearest-neighbor model), then tests **cross-type proximity** (src → tgt) against the same density-derived null.
+Returns 
+        - per-well summaries,
+        - a publication-ready plot,
+        - exemplar cells closest to each genotype means
+
+    * **Input (long table)**:
+        - `genotype`
+        - `well`
+        - `field`
+        - `unique`.cell
+        - `object.id`
+        - `object.type` (exactly two values)
+        - `x.coord` and `y.coord`
+        - `corr.intensity`.
+
+    * **Key args:**
+        - `px` (μm/px)
+        - `ci.cutoff` (scalar or vector)
+        - `alpha_pair` (same-type clustering)
+        - `alpha_cross` (cross-type proximity).
+
+    * **Returns**:
+        - `final.plot` (cowplot)
+        - `well_summary` (long table)
+        - `exemplars` (centered coordinates per exemplar cell)
+        
+        if ci.cutoff has length > 1, a named list per cutoff.
+        
+#### Minimal use:
+
+```{r}
+res <- ndrutils::compartment_coassoc(df, px = 0.149, ci.cutoff = 10,
+                                     alpha_pair = 0.05, alpha_cross = 0.05)
+res$final.plot
+
+```
+
+Details, assumptions, and interpretation: see the [Compartment Co-association Handbook](./compartment_coassoc_handbook.md).
