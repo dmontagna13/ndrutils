@@ -1,7 +1,12 @@
 Package: ndrutils
 Type: Package
+<<<<<<< HEAD
 Title: Utilities for data analysis of medium-throughput bench science
 Version: 0.1.1
+=======
+Title: Utilities for data analysis of medium-throughput bench science.
+Version: 0.1.2
+>>>>>>> e6db773f5cbbe41130fcfdea3c111d9b2fbef23f
 Authors@R: c(
     person(
       "Montagna", "Dan",
@@ -18,6 +23,7 @@ Imports:
     readr,
     stringr,
     ggplot2,
+<<<<<<< HEAD
     mgcv,
     stats,
     data.table,
@@ -31,6 +37,17 @@ Imports:
     dbscan,
     ggsignif
 License: GPL-2
+=======
+    tidyverse,
+    mgcv,
+    RANN,
+    cowplot,
+    ggsignif,
+    cli,
+    data.table,
+    rlang
+License: What license is it under?
+>>>>>>> e6db773f5cbbe41130fcfdea3c111d9b2fbef23f
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.3.2
