@@ -24,7 +24,12 @@ Imports:
     magrittr,
     purrr,
     rlang,
-    tibble
+    tibble,
+    RANN,
+    cli,
+    cowplot,
+    dbscan,
+    ggsignif
 License: GPL-2
 Encoding: UTF-8
 LazyData: true
